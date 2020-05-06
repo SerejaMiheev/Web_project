@@ -1,0 +1,502 @@
+{% extends "base.html" %}
+{% block title %}Music{% endblock %}
+{% block content %}
+
+    <style>
+        *, ::before, ::after {
+            box-sizing: border-box;
+        }
+
+        * {
+            -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+            -webkit-tap-highlight-color: transparent;
+        }
+
+
+        .container {
+            position: relative;
+            max-width: 100%;
+            margin: auto;
+            bottom: 0;
+            left: 0;
+            height: 120px;
+            padding: 20px;
+            text-align: center;
+
+        }
+
+        #track {
+            position: relative;
+            bottom: 0;
+            margin-left: auto;
+            margin-right: auto;
+            font-size: 1.5em;
+            font-family: "Lato", sans-serif;
+            color: white
+        }
+
+        .column {
+            width: inherit;
+        }
+
+
+        p {
+            color: #fff;
+            display: block;
+            font-size: .9rem;
+            font-weight: 400;
+            margin: 0 0 2px;
+        }
+
+        a, a:visited {
+            color: #8cc3e6;
+            outline: 0;
+            text-decoration: underline;
+        }
+
+        a:hover, a:focus {
+            color: #bbdef5;
+        }
+
+        p a, p a:visited {
+            line-height: inherit;
+        }
+
+
+        .add-bottom {
+            margin-bottom: 2rem !important;
+        }
+
+        .left {
+            float: left;
+        }
+
+        .right {
+            float: right;
+        }
+
+        .center {
+            text-align: center;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .no-support {
+            margin: 2rem auto;
+            text-align: center;
+            width: 90%;
+        }
+
+
+        #audiowrap,
+        #plwrap {
+            margin: 0 auto;
+            vertical-align: middle
+
+        }
+
+        #audio0 {
+
+            text-align: center !important;
+
+            margin: 0 auto;
+            width: 80%;
+        }
+
+        #tracks {
+            font-size: 0;
+            position: relative;
+            text-align: center;
+            align-items: center;
+            color: white
+
+        }
+
+        #nowPlay {
+            display: block;
+            font-size: 0;
+        }
+
+        #nowPlay span {
+            display: inline-block;
+            font-size: 1.05rem;
+            vertical-align: top;
+        }
+
+        #nowPlay span#npAction {
+            padding: 21px;
+            width: 30%;
+        }
+
+        #nowPlay span#npTitle {
+            padding: 21px;
+            text-align: right;
+            width: 70%;
+        }
+
+        #plList li {
+            cursor: pointer;
+            display: block;
+            margin: 0;
+            padding: 21px 0;
+        }
+
+        #plList li:hover {
+            background-color: rgba(0, 0, 0, .1);
+        }
+
+        .plItem {
+            position: relative;
+        }
+
+        .plTitle {
+            left: 50px;
+            overflow: hidden;
+            position: absolute;
+            right: 65px;
+            text-overflow: ellipsis;
+            top: 0;
+            white-space: nowrap;
+        }
+
+        .plNum {
+            padding-left: 21px;
+            width: 25px;
+        }
+
+        .plLength {
+            padding-left: 21px;
+            position: absolute;
+            right: 21px;
+            top: 0;
+        }
+
+        .plSel,
+        .plSel:hover {
+            background-color: rgba(0, 0, 0, .1);
+            color: #fff;
+            cursor: default !important;
+        }
+
+        #tracks a {
+            border-radius: 3px;
+            color: rgb(4, 0, 0);
+            cursor: pointer;
+            display: inline-block;
+            font-size: 2.3rem;
+            height: 35px;
+            line-height: .175;
+            margin: 0 5px 30px;
+            padding: 10px 15px;
+            text-decoration: none;
+            vertical-align: middle
+        }
+
+        #tracks a:last-child {
+            margin-left: 0;
+        }
+
+        #tracks a:hover,
+        #tracks a:active {
+            color: #fff;
+        }
+
+        #tracks a::-moz-focus-inner {
+            border: 0;
+            padding: 0;
+        }
+
+
+        .plyr--audio .plyr__controls {
+            background-color: transparent;
+            border: none;
+            color: #fff;
+            padding: 20px 20px 20px 13px;
+            width: 100%;
+        }
+
+        a.plyr__controls__item.plyr__control:hover,
+        .plyr--audio .plyr__controls button:hover,
+        .plyr--audio .plyr__controls button.tab-focus:focus,
+        .plyr__play-large {
+            background-color: rgba(0, 0, 0, .1);
+        }
+
+        .plyr__progress--played,
+        .plyr__volume--display {
+            color: rgba(0, 0, 0, .1);
+        }
+
+        .plyr--audio .plyr__progress--buffer,
+        .plyr--audio .plyr__volume--display {
+            background: rgba(0, 0, 0, .1);
+        }
+
+        .plyr--audio .plyr__progress--buffer {
+            color: rgba(0, 0, 0, .1);
+        }
+
+
+        @media only screen and (max-width: 600px) {
+            #nowPlay span#npAction {
+                display: none;
+            }
+
+            #nowPlay span#npTitle {
+                display: block;
+                text-align: center;
+                width: 100%;
+            }
+        }
+
+        #soundBar {
+
+            text-align: center;
+            padding: 0px;
+
+        }
+
+        #playlist, #playlist2 {
+            text-align: center;
+            align-items: center;
+
+        }
+
+        #playlist a {
+            text-align: center;
+            text-decoration: none;
+        }
+
+        .playlist {
+            color: blueviolet;
+            font-size: 4em;
+            text-decoration: none;
+            text-align: center;
+            margin-left: 50%;
+        }
+
+        #playlist_header {
+            text-align: center;
+            color: white !important;
+        }
+
+        .song_table {
+            max-width: 80%;
+            text-align: center;
+            position: center;
+            margin-left: 10%;
+            margin-right: 10%;
+            font-size: 18px;
+            vertical-align: middle;
+        }
+
+
+        .col1t {
+            width: 10%;
+        }
+
+        .col2t {
+            width: 20%;
+        }
+
+        .col3t {
+            width: 30%;
+        }
+
+        .col4t {
+            width: 30%;
+        }
+
+        .col5t {
+            width: 10%;
+        }
+
+        td, th {
+            font-size: 24px;
+        }
+
+        .action_btn {
+            background-color: Transparent;
+            background-repeat: no-repeat;
+            border: none;
+            cursor: pointer;
+            overflow: hidden;
+            outline: none;
+        }
+
+        .ppprimary {
+            height: 0px;
+            width: auto;
+            transition: 0.3s;
+
+        }
+
+        .ppprimary a {
+            height: 50px;
+            width: auto;
+            transition: 0.3s;
+
+        }
+
+        #pan {
+            text-align: left;
+            font-size: 14px;
+
+        }
+
+        .playC1 {
+
+            width: 50%;
+
+        }
+
+        .playC2 {
+            width: 50%;
+        }
+
+        .cc {
+            position: fixed;
+            bottom: 0px;
+            width: 100%;
+        }
+
+        .playbuttoncontainer {
+            margin: 0 auto;
+            width: 300px;
+            padding: 40px;
+        }
+
+    </style>
+
+    <audio id="audio">
+            <source type='audio/mp3'>
+    </audio>
+
+    <script>
+        var audio, context, analyser, src;
+        var state = 'stop';
+        var index = 0;
+        var list_audio = [
+            {% for count in range(playlist|length) %}
+                {% if count+1 == playlist|length %}
+                    {
+                        url_song:'{{ playlist[count] }}',
+                    }
+                {% else %}
+                    {
+                        url_song:'{{ playlist[count] }}',
+                    },
+                {% endif %}
+            {% endfor %}
+        ];
+        audio = document.getElementById("audio");
+        audio.src = list_audio[index].url_song;
+        console.log(list_audio[index].url_song);
+        audio.volume = 1;
+
+        function buttonBackPress() {
+
+            if (index != 0) {
+                audio.pause();
+                index--;
+                audio.src = list_audio[index].url_song;
+                audio.load();
+                console.log(index);
+                console.log(list_audio[index].url_song);
+
+                if (state == 'stop') {
+                    state = 'play';
+                    var button = d3.select("#button_play").classed('btn-success', true);
+                    button.select("i").attr('class', "fa fa-pause");
+                    audio.play();
+                } else if (state == 'play' || state == 'resume') {
+                    state = 'pause';
+                    audio.pause();
+                    d3.select("#button_play i").attr('class', "fa fa-play");
+                } else if (state == 'pause') {
+                    state = 'resume';
+                    audio.play();
+                    d3.select("#button_play i").attr('class', "fa fa-pause");
+                }
+            }
+        }
+
+        function buttonForwardPress() {
+
+            if(index != {{ (playlist|length)-1 }}) {
+                audio.pause();
+                index++;
+                audio.src = list_audio[index].url_song;
+                audio.load();
+                console.log(index);
+                console.log(list_audio[index].url_song);
+
+                if (state == 'stop') {
+                    state = 'play';
+                    var button = d3.select("#button_play").classed('btn-success', true);
+                    button.select("i").attr('class', "fa fa-pause");
+                    audio.play();
+                } else if (state == 'play' || state == 'resume') {
+                    state = 'pause';
+                    audio.pause();
+                    d3.select("#button_play i").attr('class', "fa fa-play");
+                } else if (state == 'pause') {
+                    state = 'resume';
+                    audio.play();
+                    d3.select("#button_play i").attr('class', "fa fa-pause");
+                }
+            }
+        }
+
+
+        function buttonPlayPress() {
+            context = new AudioContext();
+            analyser = context.createAnalyser();
+            src = context.createMediaElementSource(audio);
+            src.connect(analyser);
+            analyser.connect(context.destination);
+            audio.addEventListener('ended',function(){
+                    buttonForwardPress();
+            });
+
+
+            if (state == 'stop') {
+                state = 'play';
+                var button = d3.select("#button_play").classed('btn-success', true);
+                button.select("i").attr('class', "fa fa-pause");
+                audio.play();
+            } else if (state == 'play' || state == 'resume') {
+                state = 'pause';
+                audio.pause();
+                d3.select("#button_play i").attr('class', "fa fa-play");
+            } else if (state == 'pause') {
+                state = 'resume';
+                audio.play();
+                d3.select("#button_play i").attr('class', "fa fa-pause");
+            }
+        }
+
+    </script>
+
+<h1 class="display-4" id="playlist_header">{{cur_vibe}}</h1>
+
+    <div class="cc">
+        <div class="playbuttoncontainer">
+            <button type="button" id="button_bw" class="btn" onclick='buttonBackPress()'>
+                <i class="fa fa-backward"></i>
+            </button>
+
+            <button type="button" id="button_play" class="btn" onclick='buttonPlayPress()'>
+                <i class="fa fa-play"></i>
+            </button>
+
+            <button type="button" id="button_fw" class="btn" onclick='buttonForwardPress()'>
+                <i class="fa fa-forward"></i>
+            </button>
+
+        </div>
+    </div>
+
+{% endblock %}
